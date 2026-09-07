@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List, Any, Dict
 from datetime import datetime
 from pydantic import BaseModel, Field
 
@@ -45,12 +45,12 @@ class BeneficiaryResponse(BeneficiaryBase):
     user_id: str
     created_at: Optional[datetime] = None
 
-# 5. Transaction Schema
+# 5. Transaction Schema (Includes ML outputs & SHAP explanations)
 class TransactionBase(BaseModel):
-    account_id: str
+    account_id: Optional[str] = None
     amount: float
     transaction_type: str = "TRANSFER"
-    location: Optional[str] = "New York, US"
+    location: Optional[str] = "Delhi"
     device_id: Optional[str] = None
     status: str = "COMPLETED"
 
@@ -59,16 +59,22 @@ class TransactionResponse(TransactionBase):
     user_id: str
     beneficiary_id: Optional[str] = None
     transaction_time: Optional[datetime] = None
+    risk_score: Optional[float] = 0.00
+    risk_level: Optional[str] = "LOW"
+    reasons: Optional[List[Dict[str, Any]]] = None
+    analysis_timestamp: Optional[datetime] = None
     created_at: Optional[datetime] = None
 
 # 6. Suspicious Attempt Schema
 class SuspiciousAttemptBase(BaseModel):
     reason: str
     risk_score: float = 0.00
+    risk_level: str = "HIGH"
     status: str = "UNDER_REVIEW"
 
 class SuspiciousAttemptResponse(SuspiciousAttemptBase):
     id: str
     transaction_id: Optional[str] = None
     user_id: str
+    explanations: Optional[List[Dict[str, Any]]] = None
     created_at: Optional[datetime] = None

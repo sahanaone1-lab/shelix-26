@@ -4,6 +4,7 @@ from app.core.config import settings
 from app.api.health import router as health_router
 from app.api.auth import router as auth_router
 from app.api.customer import router as customer_router
+from app.api.transactions import router as transactions_router
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -26,6 +27,7 @@ app.add_middleware(
 app.include_router(health_router, prefix=settings.API_V1_PREFIX)
 app.include_router(auth_router, prefix=settings.API_V1_PREFIX)
 app.include_router(customer_router, prefix=settings.API_V1_PREFIX)
+app.include_router(transactions_router, prefix=settings.API_V1_PREFIX)
 
 @app.get("/")
 async def root():

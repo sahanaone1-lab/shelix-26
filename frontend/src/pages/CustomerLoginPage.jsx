@@ -29,19 +29,19 @@ export default function CustomerLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#051F20] text-[#DAF1DE] flex flex-col justify-between">
+    <div className="min-h-screen bg-[#0D2322] text-[#E6F4ED] flex flex-col justify-between">
       {/* Top Header */}
-      <header className="border-b border-[#163832] bg-[#0B2B26]/60 backdrop-blur-md px-6 py-4">
+      <header className="border-b border-[#286056] bg-[#143834]/90 backdrop-blur-md px-6 py-3.5">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 hover:opacity-90 transition-opacity">
-            <div className="w-8 h-8 rounded-lg bg-[#163832] border border-[#235347] flex items-center justify-center text-[#8EB69B]">
+            <div className="w-8 h-8 rounded-lg bg-[#1C4841] border border-[#286056] flex items-center justify-center text-[#9BC3AC]">
               <ShieldCheck className="w-4 h-4" />
             </div>
             <span className="text-lg font-bold tracking-wider text-white">FRAUDLENS</span>
           </Link>
           <Link
             to="/"
-            className="flex items-center gap-1.5 text-xs text-[#8EB69B] hover:text-[#DAF1DE] transition-colors"
+            className="flex items-center gap-1.5 text-xs text-[#9BC3AC] hover:text-[#E6F4ED] transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Back to Portal Selection</span>
@@ -51,34 +51,34 @@ export default function CustomerLoginPage() {
 
       {/* Main Login Card */}
       <main className="max-w-md mx-auto px-6 py-12 w-full flex-1 flex flex-col justify-center">
-        <div className="bg-[#0B2B26] border border-[#163832] rounded-2xl p-8 shadow-2xl">
+        <div className="bg-[#143834] border border-[#286056] rounded-xl p-8">
           {/* Card Header */}
-          <div className="text-center mb-8">
-            <div className="w-12 h-12 rounded-xl bg-[#163832] border border-[#235347] flex items-center justify-center text-[#8EB69B] mx-auto mb-4">
-              <User className="w-6 h-6" />
+          <div className="text-center mb-7">
+            <div className="w-11 h-11 rounded-lg bg-[#1C4841] border border-[#286056] flex items-center justify-center text-[#9BC3AC] mx-auto mb-3">
+              <User className="w-5 h-5" />
             </div>
-            <h1 className="text-2xl font-bold text-white">Customer Login</h1>
-            <p className="text-xs text-[#8EB69B] mt-1">
+            <h1 className="text-xl font-bold text-white">Customer Login</h1>
+            <p className="text-xs text-[#9BC3AC] mt-1">
               Secure access to your personal banking account
             </p>
           </div>
 
-          {/* Clean Error Alert */}
+          {/* Restrained Error Alert */}
           {errorMessage && (
-            <div className="mb-6 p-3.5 rounded-xl bg-rose-950/80 border border-rose-800/80 flex items-start gap-3 text-xs text-rose-200 animate-fadeIn">
+            <div className="mb-5 p-3 rounded-lg bg-[#2D171B] border border-[#7A2B37] flex items-start gap-2.5 text-xs text-rose-200">
               <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
               <p className="leading-relaxed">{errorMessage}</p>
             </div>
           )}
 
           {/* Form */}
-          <form onSubmit={handleLogin} className="space-y-5">
+          <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-[#8EB69B] mb-2 uppercase tracking-wider">
+              <label className="block text-[11px] font-semibold text-[#9BC3AC] mb-1.5 uppercase tracking-wider">
                 Email / User ID
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#8EB69B]/70">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#9BC3AC]/70">
                   <User className="w-4 h-4" />
                 </div>
                 <input
@@ -87,17 +87,17 @@ export default function CustomerLoginPage() {
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                   placeholder="customer@bank.com or Customer ID"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#163832] border border-[#235347] text-white placeholder-[#8EB69B]/50 text-sm focus:outline-none focus:ring-2 focus:ring-[#8EB69B]/50 focus:border-[#8EB69B] transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-[#1C4841] border border-[#286056] text-white placeholder-[#9BC3AC]/40 text-xs sm:text-sm focus:outline-none focus:border-[#3D8577] transition-colors"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#8EB69B] mb-2 uppercase tracking-wider">
+              <label className="block text-[11px] font-semibold text-[#9BC3AC] mb-1.5 uppercase tracking-wider">
                 Password
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#8EB69B]/70">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#9BC3AC]/70">
                   <Lock className="w-4 h-4" />
                 </div>
                 <input
@@ -106,7 +106,7 @@ export default function CustomerLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#163832] border border-[#235347] text-white placeholder-[#8EB69B]/50 text-sm focus:outline-none focus:ring-2 focus:ring-[#8EB69B]/50 focus:border-[#8EB69B] transition-all"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-[#1C4841] border border-[#286056] text-white placeholder-[#9BC3AC]/40 text-xs sm:text-sm focus:outline-none focus:border-[#3D8577] transition-colors"
                 />
               </div>
             </div>
@@ -114,16 +114,16 @@ export default function CustomerLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 py-3.5 px-5 rounded-xl bg-[#235347] hover:bg-[#2e6b5c] active:bg-[#1c4339] disabled:opacity-60 text-white font-semibold text-sm transition-colors flex items-center justify-center gap-2 border border-[#8EB69B]/30 cursor-pointer shadow-lg"
+              className="w-full mt-2 py-2.5 px-4 rounded-lg bg-[#286056] hover:bg-[#33786D] active:bg-[#1E5047] disabled:opacity-60 text-white font-medium text-xs sm:text-sm transition-colors flex items-center justify-center gap-2 border border-[#3D8577] cursor-pointer"
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-4 h-4 text-[#8EB69B] animate-spin" />
+                  <Loader2 className="w-4 h-4 text-[#9BC3AC] animate-spin" />
                   <span>Verifying Credentials...</span>
                 </>
               ) : (
                 <>
-                  <LogIn className="w-4 h-4 text-[#8EB69B]" />
+                  <LogIn className="w-4 h-4 text-[#9BC3AC]" />
                   <span>Customer Login</span>
                 </>
               )}
@@ -131,11 +131,11 @@ export default function CustomerLoginPage() {
           </form>
 
           {/* Demo Credentials Info */}
-          <div className="mt-6 pt-5 border-t border-[#163832] text-center space-y-2">
-            <div className="inline-block px-3 py-1 rounded bg-[#163832]/60 border border-[#235347]/60 text-[11px] text-[#8EB69B]">
-              <span className="text-[#DAF1DE] font-medium">Demo:</span> customer@bank.com / password123
+          <div className="mt-6 pt-4 border-t border-[#286056] text-center space-y-2">
+            <div className="inline-block px-3 py-1 rounded bg-[#1C4841] border border-[#286056] text-[11px] text-[#9BC3AC]">
+              <span className="text-white font-medium">Demo:</span> customer@bank.com / password123
             </div>
-            <p className="text-[11px] text-[#8EB69B]/70">
+            <p className="text-[11px] text-[#9BC3AC]/70">
               Need help accessing your customer account? Contact 24/7 bank support.
             </p>
           </div>
@@ -143,7 +143,7 @@ export default function CustomerLoginPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-[#163832] py-4 text-center text-xs text-[#8EB69B]/70">
+      <footer className="border-t border-[#286056] py-4 text-center text-xs text-[#9BC3AC]/70">
         <p>© 2026 FraudLens Financial Security. Secure Customer Session.</p>
       </footer>
     </div>

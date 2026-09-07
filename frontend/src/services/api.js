@@ -143,8 +143,120 @@ export async function loginAnalyst(employeeId, password) {
   }
 }
 
+/**
+ * Fetch all screened transactions from Supabase
+ * GET /api/transactions
+ */
+export async function getTransactions(riskLevel = null) {
+  try {
+    const query = riskLevel ? `?risk_level=${encodeURIComponent(riskLevel)}` : '';
+    const response = await requestApi(`/api/transactions${query}`, {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error ${response.status}`);
+    }
+
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message || 'Failed to load transactions',
+    };
+  }
+}
+
+/**
+ * Fetch a single transaction by ID
+ * GET /api/transactions/{id}
+ */
+export async function getTransactionById(id) {
+  try {
+    const response = await requestApi(`/api/transactions/${id}`, {
+      method: 'GET',
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return { success: true, data };
+    }
+  } catch (err) {
+    // Continue to fallback
+  }
+
+  // Fallback: load all transactions and find matching record
+  try {
+    const listRes = await getTransactions();
+    if (listRes.success && listRes.data) {
+      const match = listRes.data.find((t) => t.id === id);
+      if (match) {
+        return { success: true, data: match };
+      }
+    }
+    return { success: false, error: 'Transaction not found' };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message || 'Failed to load transaction details',
+    };
+  }
+}
+
+/**
+ * Fetch high-priority suspicious attempts with SHAP explanations
+ * GET /api/transactions/suspicious
+ */
+export async function getSuspiciousAttempts() {
+  try {
+    const response = await requestApi('/api/transactions/suspicious', {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error ${response.status}`);
+    }
+
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message || 'Failed to load suspicious attempts',
+    };
+  }
+}
+
+/**
+ * Trigger seeding and screening of sample_100_transactions.csv
+ * POST /api/transactions/seed
+ */
+export async function seedTransactions() {
+  try {
+    const response = await requestApi('/api/transactions/seed', {
+      method: 'POST',
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error ${response.status}`);
+    }
+
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message || 'Failed to seed transactions',
+    };
+  }
+}
+
 export default {
   getHealthStatus,
   loginCustomer,
   loginAnalyst,
+  getTransactions,
+  getSuspiciousAttempts,
+  seedTransactions,
 };

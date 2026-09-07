@@ -1,29 +1,34 @@
 @import "tailwindcss";
 
 @theme {
-  --color-pine-950: #051F20;
-  --color-pine-900: #0B2B26;
-  --color-pine-800: #163832;
-  --color-pine-700: #235347;
-  --color-pine-400: #8EB69B;
-  --color-pine-100: #DAF1DE;
-  --color-pine-50: #F2FAF5;
+  --color-pine-950: #0D2322;
+  --color-pine-900: #143834;
+  --color-pine-800: #1C4841;
+  --color-pine-700: #286056;
+  --color-pine-600: #2E7367;
+  --color-pine-400: #9BC3AC;
+  --color-pine-100: #E6F4ED;
+  --color-pine-50: #F4FAF7;
 }
 
 :root {
-  --bg-primary: #051F20;
-  --bg-surface: #0B2B26;
-  --bg-card: #163832;
-  --accent-primary: #235347;
-  --accent-muted: #8EB69B;
-  --accent-light: #DAF1DE;
+  --bg-primary: #0D2322;
+  --bg-surface: #143834;
+  --bg-card: #1C4841;
+  --bg-subtle: #23544C;
+  --border-subtle: #286056;
+  --accent-primary: #2E7367;
+  --accent-muted: #9BC3AC;
+  --accent-light: #E6F4ED;
 }
 
 body {
-  background-color: #051F20;
-  color: #DAF1DE;
+  background-color: #0D2322;
+  color: #E6F4ED;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   margin: 0;
   padding: 0;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

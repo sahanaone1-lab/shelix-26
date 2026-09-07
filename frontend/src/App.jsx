@@ -5,6 +5,7 @@ import CustomerLoginPage from './pages/CustomerLoginPage';
 import AnalystLoginPage from './pages/AnalystLoginPage';
 import CustomerDashboard from './pages/CustomerDashboard';
 import AnalystDashboard from './pages/AnalystDashboard';
+import TransactionDetailsPage from './pages/TransactionDetailsPage';
 import ProtectedRoute from './components/ProtectedRoute';
 
 export default function App() {
@@ -31,6 +32,15 @@ export default function App() {
           element={
             <ProtectedRoute allowedRole="analyst">
               <AnalystDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/analyst/transactions/:transactionId"
+          element={
+            <ProtectedRoute allowedRole="analyst">
+              <TransactionDetailsPage />
             </ProtectedRoute>
           }
         />
