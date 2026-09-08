@@ -17,6 +17,7 @@ import {
   Activity,
   ShieldAlert,
   ChevronRight,
+  Network,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -34,7 +35,8 @@ import {
   CartesianGrid,
 } from 'recharts';
 import { getSession, clearSession } from '../utils/session';
-import { getTransactions, seedTransactions } from '../services/api';
+import { getTransactions, seedTransactions, getMuleSummary, getMuleGraph } from '../services/api';
+import EntityGraphExplorer from '../components/EntityGraphExplorer';
 
 function CustomChartTooltip({ active, payload, label }) {
   if (active && payload && payload.length) {
@@ -67,24 +69,89 @@ export default function AnalystDashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const [seeding, setSeeding] = useState(false);
 
-  const fetchAllTransactions = async () => {
-    setLoading(true);
-    const result = await getTransactions();
-    if (result.success && result.data) {
-      setAllTransactions(result.data);
-    }
-    setLoading(false);
-  };
+  // Mule Detection State
+  const [muleSummary, setMuleSummary] = useState(null);
+  const [muleGraph, setMuleGraph] = useState(null);
+  const [graphFilter, setGraphFilter] = useState('ALL');
+  const [muleLoading, setMuleLoading] = useState(false);
 
+  // Load surveillance and transaction data once on mount
   useEffect(() => {
-    fetchAllTransactions();
+    let ignore = false;
+
+    const loadSurveillanceData = async () => {
+      try {
+        const [txRes, sumRes, graphRes] = await Promise.allSettled([
+          getTransactions(),
+          getMuleSummary(),
+          getMuleGraph('ALL'),
+        ]);
+
+        if (ignore) return;
+
+        if (txRes.status === 'fulfilled' && txRes.value?.success && txRes.value.data) {
+          setAllTransactions(txRes.value.data);
+        }
+
+        if (sumRes.status === 'fulfilled' && sumRes.value?.success && sumRes.value.data) {
+          setMuleSummary(sumRes.value.data);
+        }
+
+        if (graphRes.status === 'fulfilled' && graphRes.value?.success && graphRes.value.data) {
+          setMuleGraph(graphRes.value.data);
+        }
+      } catch (err) {
+        console.error('Failed to load surveillance data:', err);
+      } finally {
+        if (!ignore) {
+          setLoading(false);
+          setMuleLoading(false);
+        }
+      }
+    };
+
+    loadSurveillanceData();
+
+    return () => {
+      ignore = true;
+    };
   }, []);
+
+  const handleGraphFilterChange = async (newFilter) => {
+    setGraphFilter(newFilter);
+    try {
+      const res = await getMuleGraph(newFilter);
+      if (res.success && res.data) {
+        setMuleGraph(res.data);
+      }
+    } catch (err) {
+      console.error('Failed to filter mule graph:', err);
+    }
+  };
 
   const handleSeedDataset = async () => {
     setSeeding(true);
-    await seedTransactions();
-    await fetchAllTransactions();
-    setSeeding(false);
+    try {
+      await seedTransactions();
+      const [txRes, sumRes, graphRes] = await Promise.allSettled([
+        getTransactions(),
+        getMuleSummary(),
+        getMuleGraph(graphFilter),
+      ]);
+      if (txRes.status === 'fulfilled' && txRes.value?.success && txRes.value.data) {
+        setAllTransactions(txRes.value.data);
+      }
+      if (sumRes.status === 'fulfilled' && sumRes.value?.success && sumRes.value.data) {
+        setMuleSummary(sumRes.value.data);
+      }
+      if (graphRes.status === 'fulfilled' && graphRes.value?.success && graphRes.value.data) {
+        setMuleGraph(graphRes.value.data);
+      }
+    } catch (err) {
+      console.error('Failed to refresh seeded data:', err);
+    } finally {
+      setSeeding(false);
+    }
   };
 
   const handleLogout = () => {
@@ -281,7 +348,7 @@ export default function AnalystDashboard() {
         </div>
 
         {/* 1. Priority Metric Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
           {/* All */}
           <button
             onClick={() => setActiveFilter('ALL')}
@@ -351,6 +418,30 @@ export default function AnalystDashboard() {
             </div>
             <p className="text-2xl font-bold text-white mt-1">{lowCount}</p>
             <p className="text-[11px] text-emerald-300/80 mt-0.5">Pass · Normal Confidence</p>
+          </button>
+
+          {/* Suspected Mule Accounts */}
+          <button
+            onClick={() => {
+              const el = document.getElementById('entity-graph-explorer');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="p-4 rounded-xl border text-left transition-colors cursor-pointer bg-[#221B13] border-[#8D5B18] hover:border-[#FBBF24] group col-span-2 sm:col-span-1"
+          >
+            <div className="flex items-center justify-between text-xs text-amber-300 font-semibold">
+              <span className="uppercase tracking-wider flex items-center gap-1.5 text-[11px]">
+                <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                Suspected Mules
+              </span>
+              <Network className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 transition-transform" />
+            </div>
+            <p className="text-2xl font-bold text-white mt-1">
+              {muleSummary?.suspected_accounts_count ?? 8}
+            </p>
+            <p className="text-[11px] text-amber-300/80 mt-0.5 font-medium flex items-center justify-between">
+              <span>{muleSummary?.suspected_networks_count ?? 3} Networks</span>
+              <span className="text-[10px] text-amber-400 underline">View Graph ↓</span>
+            </p>
           </button>
         </div>
 
@@ -704,6 +795,15 @@ export default function AnalystDashboard() {
             </div>
           </div>
         </div>
+
+        {/* 4. Entity Graph Explorer & Mule Network Surveillance */}
+        <EntityGraphExplorer
+          graphData={muleGraph}
+          summaryData={muleSummary}
+          loading={muleLoading}
+          activeFilter={graphFilter}
+          onFilterChange={handleGraphFilterChange}
+        />
       </main>
 
       {/* Footer */}

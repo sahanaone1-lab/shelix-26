@@ -1,6 +1,7 @@
 import logging
 from typing import List, Dict, Any, Optional
 from fastapi import APIRouter, HTTPException, Query, status
+from pydantic import BaseModel
 from app.services.fraud_service import fraud_service
 from app.core.database import get_supabase
 
@@ -69,7 +70,12 @@ async def get_transaction_by_id(transaction_id: str):
         )
         if not res.data or len(res.data) == 0:
             raise HTTPException(status_code=404, detail="Transaction not found")
-        return res.data[0]
+        txn = res.data[0]
+        try:
+            txn = fraud_service.enrich_transaction_shap(txn)
+        except Exception as en_err:
+            logger.warning(f"Note on enriching transaction SHAP: {en_err}")
+        return txn
     except HTTPException:
         raise
     except Exception as e:
@@ -88,15 +94,66 @@ async def seed_sample_transactions():
         logger.error(f"Seeding failed: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Seeding failed: {str(e)}")
 
+class FinalizeDecisionRequest(BaseModel):
+    decision: str  # "COMPLETED" or "BLOCKED"
+    notes: Optional[str] = None
+
+
 @router.post("/screen", response_model=Dict[str, Any])
 async def screen_transaction(payload: Dict[str, Any]):
     """
     Evaluates an incoming transaction against the trained ML model and SHAP explainer.
     Returns risk_score (0-100), risk_level, decision, and top SHAP explanations.
+    If the transaction results in a BLOCKED decision and includes a transaction identifier,
+    it automatically anchors the decision to the FraudDecisionLedger smart contract.
     """
     try:
         result = fraud_service.evaluate_features(payload)
+
+        # If transaction has an ID and reached a final BLOCKED decision, anchor it fail-safely
+        txn_id = payload.get("id") or payload.get("transaction_id")
+        if txn_id and result.get("decision") in ("BLOCKED", "COMPLETED"):
+            try:
+                fraud_service.finalize_and_anchor_decision(
+                    transaction_id=str(txn_id),
+                    decision=result["decision"],
+                    risk_score=result.get("risk_score"),
+                    risk_level=result.get("risk_level"),
+                    evidence_data=result.get("reasons"),
+                    update_db=False,
+                )
+            except Exception as anchor_err:
+                logger.warning(f"Screening auto-anchoring note for {txn_id} (non-blocking): {anchor_err}")
+
         return result
     except Exception as e:
         logger.error(f"Screening failed: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Screening failed: {str(e)}")
+
+
+@router.post("/{transaction_id}/decision", response_model=Dict[str, Any])
+async def record_transaction_decision(transaction_id: str, payload: FinalizeDecisionRequest):
+    """
+    Records a finalized decision (COMPLETED or BLOCKED) for an existing transaction
+    and anchors the audit proof directly onto the FraudDecisionLedger smart contract.
+    Preserves all existing banking data and guarantees non-blocking fail-safe execution.
+    """
+    decision_clean = payload.decision.strip().upper()
+    if decision_clean not in {"COMPLETED", "BLOCKED"}:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid decision '{payload.decision}'. Only COMPLETED or BLOCKED decisions are allowed."
+        )
+
+    try:
+        res = fraud_service.finalize_and_anchor_decision(
+            transaction_id=transaction_id,
+            decision=decision_clean,
+            update_db=True,
+        )
+        return res
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
+    except Exception as e:
+        logger.error(f"Error finalizing decision for transaction {transaction_id}: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to finalize decision: {str(e)}")

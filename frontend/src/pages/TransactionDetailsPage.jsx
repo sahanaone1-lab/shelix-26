@@ -16,6 +16,7 @@ import {
   RefreshCw,
   BarChart3,
   Activity,
+  MinusCircle,
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -31,7 +32,7 @@ import {
   CartesianGrid,
 } from 'recharts';
 import { getSession, clearSession } from '../utils/session';
-import { getTransactionById } from '../services/api';
+import { getTransactionById, verifyBlockchainDecision, getBlockchainRecord } from '../services/api';
 
 const FACTOR_TITLE_MAP = {
   hour_of_day: 'Unusual Transaction Time',
@@ -100,6 +101,10 @@ export default function TransactionDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [blockchainRecord, setBlockchainRecord] = useState(null);
+  const [verificationResult, setVerificationResult] = useState(null);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [copiedHash, setCopiedHash] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -110,6 +115,39 @@ export default function TransactionDetailsPage() {
       if (isMounted) {
         if (res.success && res.data) {
           setTransaction(res.data);
+          // Query initial blockchain verification and record
+          try {
+            const vRes = await verifyBlockchainDecision(transactionId);
+            if (isMounted && vRes.success && vRes.data) {
+              setVerificationResult(vRes.data);
+              setBlockchainRecord(vRes.data);
+            } else if (isMounted) {
+              const isFinalized = res.data.status === 'COMPLETED' || res.data.status === 'BLOCKED';
+              setVerificationResult({
+                verification_status: isFinalized ? 'NOT_VERIFIED' : 'NOT_APPLICABLE',
+                status: isFinalized ? 'NOT_VERIFIED' : 'NOT_APPLICABLE',
+                display_status: isFinalized ? '⚠ NOT VERIFIED' : '— NOT APPLICABLE',
+                reason: isFinalized
+                  ? 'A blockchain record was expected, but no matching blockchain record exists in FraudDecisionLedger.'
+                  : 'This transaction has not reached the stage where a blockchain audit record should exist.',
+                verified: false,
+              });
+            }
+          } catch (bErr) {
+            console.warn('Initial blockchain verification error:', bErr);
+            if (isMounted) {
+              const isFinalized = res.data.status === 'COMPLETED' || res.data.status === 'BLOCKED';
+              setVerificationResult({
+                verification_status: isFinalized ? 'NOT_VERIFIED' : 'NOT_APPLICABLE',
+                status: isFinalized ? 'NOT_VERIFIED' : 'NOT_APPLICABLE',
+                display_status: isFinalized ? '⚠ NOT VERIFIED' : '— NOT APPLICABLE',
+                reason: isFinalized
+                  ? 'A blockchain record was expected, but no matching blockchain record exists in FraudDecisionLedger.'
+                  : 'This transaction has not reached the stage where a blockchain audit record should exist.',
+                verified: false,
+              });
+            }
+          }
         } else {
           setError(res.error || 'Transaction record could not be loaded.');
         }
@@ -128,6 +166,44 @@ export default function TransactionDetailsPage() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
+  };
+
+  const handleCopyHash = () => {
+    const hash = verificationResult?.blockchain_reference || blockchainRecord?.transaction_hash;
+    if (hash) {
+      navigator.clipboard.writeText(hash);
+      setCopiedHash(true);
+      setTimeout(() => setCopiedHash(false), 2000);
+    }
+  };
+
+  const handleVerifyBlockchain = async () => {
+    if (!transactionId) return;
+    setIsVerifying(true);
+    const res = await verifyBlockchainDecision(transactionId);
+    if (res.success && res.data) {
+      setVerificationResult(res.data);
+      if (res.data.blockchain_reference) {
+        setBlockchainRecord((prev) => ({
+          ...prev,
+          transaction_hash: res.data.blockchain_reference,
+          block_number: res.data.block_number,
+          timestamp: res.data.timestamp,
+        }));
+      }
+    } else {
+      const isFinalized = transaction?.status === 'COMPLETED' || transaction?.status === 'BLOCKED';
+      setVerificationResult({
+        verification_status: isFinalized ? 'NOT_VERIFIED' : 'NOT_APPLICABLE',
+        status: isFinalized ? 'NOT_VERIFIED' : 'NOT_APPLICABLE',
+        display_status: isFinalized ? '⚠ NOT VERIFIED' : '— NOT APPLICABLE',
+        reason: isFinalized
+          ? 'A blockchain record was expected, but no matching blockchain record exists in FraudDecisionLedger.'
+          : 'This transaction has not reached the stage where a blockchain audit record should exist.',
+        verified: false,
+      });
+    }
+    setIsVerifying(false);
   };
 
   const handleLogout = () => {
@@ -258,12 +334,17 @@ export default function TransactionDetailsPage() {
       else if (r.factor === 'implied_travel_speed_kmh') scoreVal = 90;
       else if (r.factor === 'txns_last_10_min') scoreVal = 70;
 
+      const shapRaw =
+        r.shap_impact != null
+          ? Number(r.shap_impact)
+          : r.impact != null
+          ? Number(r.impact)
+          : null;
+
       const shapStr =
         r.shap_display ||
-        (r.shap_impact != null
-          ? `+${Number(r.shap_impact).toFixed(2)}`
-          : r.impact != null
-          ? `+${Number(r.impact).toFixed(2)}`
+        (shapRaw != null
+          ? (shapRaw > 0 ? `+${shapRaw.toFixed(2)}` : shapRaw < 0 ? shapRaw.toFixed(2) : '+0.00')
           : '+0.00');
 
       let color = '#D97706';
@@ -622,12 +703,17 @@ export default function TransactionDetailsPage() {
                       const isTravel = item.factor === 'implied_travel_speed_kmh' || item.factor === 'distance_from_prev_km';
                       const isVelocity = item.factor === 'txns_last_10_min' || item.factor === 'txns_last_1_hour' || item.factor === 'txns_last_24_hours';
 
+                      const itemShapRaw =
+                        item.shap_impact != null
+                          ? Number(item.shap_impact)
+                          : item.impact != null
+                          ? Number(item.impact)
+                          : null;
+
                       const shapDisplay =
                         item.shap_display ||
-                        (item.shap_impact != null
-                          ? `+${Number(item.shap_impact).toFixed(2)}`
-                          : item.impact != null
-                          ? `+${Number(item.impact).toFixed(2)}`
+                        (itemShapRaw != null
+                          ? (itemShapRaw > 0 ? `+${itemShapRaw.toFixed(2)}` : itemShapRaw < 0 ? itemShapRaw.toFixed(2) : '+0.00')
                           : '+0.00');
 
                       return (
@@ -1098,6 +1184,270 @@ export default function TransactionDetailsPage() {
                   </div>
                 </div>
               </div>
+            </div>
+
+            {/* ------------------------------------------------------------- */}
+            {/* Step 4: Fraud Decision Integrity (Blockchain Audit UI)       */}
+            {/* ------------------------------------------------------------- */}
+            <div className="bg-[#143834] border border-[#286056] rounded-xl p-5 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-[#286056] pb-3.5">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-[#1C4841] border border-[#286056] flex items-center justify-center text-[#4EBEA3]">
+                    <ShieldCheck className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-bold text-white tracking-wide">
+                      Fraud Decision Integrity
+                    </h2>
+                    <p className="text-[11px] text-[#9BC3AC]">
+                      Cryptographic ledger verification via FraudDecisionLedger smart contract
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleVerifyBlockchain}
+                  disabled={isVerifying}
+                  className="inline-flex items-center justify-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#1C4841] hover:bg-[#286056] text-xs font-semibold text-white border border-[#286056] transition-colors disabled:opacity-50 cursor-pointer shadow-sm"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${isVerifying ? 'animate-spin text-[#4EBEA3]' : 'text-[#9BC3AC]'}`} />
+                  <span>{isVerifying ? 'Verifying on Blockchain...' : 'Verify Blockchain Record'}</span>
+                </button>
+              </div>
+
+              {/* Compact Data Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 text-xs">
+                {/* 1. Transaction ID */}
+                <div className="p-3 rounded-lg bg-[#1C4841]/40 border border-[#286056] space-y-1">
+                  <span className="text-[10px] uppercase font-semibold text-[#9BC3AC] tracking-wider block">
+                    Transaction ID
+                  </span>
+                  <p className="font-mono text-white text-[11px] truncate" title={transaction.id}>
+                    {transaction.id}
+                  </p>
+                </div>
+
+                {/* 2. Risk Score & Category */}
+                <div className="p-3 rounded-lg bg-[#1C4841]/40 border border-[#286056] space-y-1">
+                  <span className="text-[10px] uppercase font-semibold text-[#9BC3AC] tracking-wider block">
+                    Risk Score & Category
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono font-bold text-white text-xs">
+                      {transaction.risk_score != null ? `${Math.round(transaction.risk_score)}/100` : 'N/A'}
+                    </span>
+                    <span
+                      className={`text-[10px] font-mono px-1.5 py-0.5 rounded font-semibold ${
+                        transaction.risk_level === 'HIGH'
+                          ? 'bg-[#33171D] text-rose-300 border border-[#7A2B37]'
+                          : transaction.risk_level === 'MEDIUM'
+                          ? 'bg-[#362612] text-amber-300 border border-[#784F17]'
+                          : 'bg-[#133D30] text-emerald-300 border border-[#1F6B52]'
+                      }`}
+                    >
+                      {transaction.risk_level || 'LOW'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* 3. Final Decision */}
+                <div className="p-3 rounded-lg bg-[#1C4841]/40 border border-[#286056] space-y-1">
+                  <span className="text-[10px] uppercase font-semibold text-[#9BC3AC] tracking-wider block">
+                    Final Decision
+                  </span>
+                  <span
+                    className={`inline-block font-mono text-xs font-bold px-2 py-0.5 rounded ${
+                      transaction.status === 'BLOCKED'
+                        ? 'bg-[#33171D] text-rose-300 border border-[#7A2B37]'
+                        : transaction.status === 'COMPLETED'
+                        ? 'bg-[#133D30] text-emerald-300 border border-[#1F6B52]'
+                        : 'bg-[#362612] text-amber-300 border border-[#784F17]'
+                    }`}
+                  >
+                    {transaction.status || 'COMPLETED'}
+                  </span>
+                </div>
+
+                {/* 4. Blockchain Status */}
+                <div className="p-3 rounded-lg bg-[#1C4841]/40 border border-[#286056] space-y-1">
+                  <span className="text-[10px] uppercase font-semibold text-[#9BC3AC] tracking-wider block">
+                    Blockchain Status
+                  </span>
+                  <div>
+                    {(() => {
+                      const rawStatus = (verificationResult?.verification_status || verificationResult?.status || '').toUpperCase();
+                      let effectiveStatus = 'NOT_APPLICABLE';
+                      if (rawStatus === 'VERIFIED') {
+                        effectiveStatus = 'VERIFIED';
+                      } else if (rawStatus === 'INTEGRITY_FAILED' || rawStatus === 'FAILED') {
+                        effectiveStatus = 'INTEGRITY_FAILED';
+                      } else if (rawStatus === 'NOT_VERIFIED' || rawStatus === 'NOT_FOUND') {
+                        effectiveStatus = 'NOT_VERIFIED';
+                      } else if (rawStatus === 'NOT_APPLICABLE') {
+                        effectiveStatus = 'NOT_APPLICABLE';
+                      } else if (transaction?.status && transaction.status !== 'COMPLETED' && transaction.status !== 'BLOCKED') {
+                        effectiveStatus = 'NOT_APPLICABLE';
+                      } else if (blockchainRecord?.transaction_hash) {
+                        effectiveStatus = 'VERIFIED';
+                      } else {
+                        effectiveStatus = 'NOT_VERIFIED';
+                      }
+
+                      if (isVerifying) {
+                        return (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-xs font-mono text-[#9BC3AC] bg-[#143834] border border-[#286056]">
+                            <RefreshCw className="w-3 h-3 animate-spin" /> Verifying...
+                          </span>
+                        );
+                      }
+                      if (effectiveStatus === 'VERIFIED') {
+                        return (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-xs font-mono font-bold bg-[#133D30] text-emerald-300 border border-[#1F6B52]">
+                            ✓ VERIFIED
+                          </span>
+                        );
+                      }
+                      if (effectiveStatus === 'NOT_VERIFIED') {
+                        return (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-xs font-mono font-bold bg-[#362612] text-amber-300 border border-[#784F17]">
+                            ⚠ NOT VERIFIED
+                          </span>
+                        );
+                      }
+                      if (effectiveStatus === 'INTEGRITY_FAILED') {
+                        return (
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-xs font-mono font-bold bg-[#33171D] text-rose-300 border border-[#7A2B37]">
+                            ⚠ INTEGRITY FAILED
+                          </span>
+                        );
+                      }
+                      return (
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-xs font-mono font-bold bg-[#163532] text-[#9BC3AC] border border-[#286056]">
+                          — NOT APPLICABLE
+                        </span>
+                      );
+                    })()}
+                  </div>
+                </div>
+
+                {/* 5. Blockchain Reference / TxHash */}
+                <div className="sm:col-span-2 lg:col-span-3 p-3 rounded-lg bg-[#1C4841]/40 border border-[#286056] space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] uppercase font-semibold text-[#9BC3AC] tracking-wider">
+                      Blockchain Reference / Transaction ID
+                    </span>
+                    {(verificationResult?.blockchain_reference || blockchainRecord?.transaction_hash) && (
+                      <button
+                        onClick={handleCopyHash}
+                        className="text-[10px] font-mono text-[#9BC3AC] hover:text-white flex items-center gap-1 cursor-pointer transition-colors"
+                      >
+                        {copiedHash ? <Check className="w-2.5 h-2.5 text-emerald-400" /> : <Copy className="w-2.5 h-2.5" />}
+                        <span>{copiedHash ? 'Copied' : 'Copy Hash'}</span>
+                      </button>
+                    )}
+                  </div>
+                  <p className="font-mono text-[11px] text-[#E6F4ED] break-all">
+                    {verificationResult?.blockchain_reference || blockchainRecord?.transaction_hash || '0x' + '0'.repeat(64)}
+                  </p>
+                </div>
+
+                {/* 6. Recorded Timestamp */}
+                <div className="p-3 rounded-lg bg-[#1C4841]/40 border border-[#286056] space-y-1">
+                  <span className="text-[10px] uppercase font-semibold text-[#9BC3AC] tracking-wider block">
+                    Recorded Timestamp
+                  </span>
+                  <p className="font-mono text-white text-[11px]">
+                    {(() => {
+                      const ts = verificationResult?.timestamp || blockchainRecord?.timestamp;
+                      if (ts) {
+                        return typeof ts === 'number'
+                          ? new Date(ts * 1000).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'medium' })
+                          : new Date(ts).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'medium' });
+                      }
+                      return transaction?.analysis_timestamp
+                        ? new Date(transaction.analysis_timestamp).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'medium' })
+                        : 'Recorded on Ledger';
+                    })()}
+                  </p>
+                </div>
+              </div>
+
+              {/* Verification Result Explanation Callout */}
+              {(() => {
+                const rawStatus = (verificationResult?.verification_status || verificationResult?.status || '').toUpperCase();
+                let effectiveStatus = 'NOT_APPLICABLE';
+                if (rawStatus === 'VERIFIED') {
+                  effectiveStatus = 'VERIFIED';
+                } else if (rawStatus === 'INTEGRITY_FAILED' || rawStatus === 'FAILED') {
+                  effectiveStatus = 'INTEGRITY_FAILED';
+                } else if (rawStatus === 'NOT_VERIFIED' || rawStatus === 'NOT_FOUND') {
+                  effectiveStatus = 'NOT_VERIFIED';
+                } else if (rawStatus === 'NOT_APPLICABLE') {
+                  effectiveStatus = 'NOT_APPLICABLE';
+                } else if (transaction?.status && transaction.status !== 'COMPLETED' && transaction.status !== 'BLOCKED') {
+                  effectiveStatus = 'NOT_APPLICABLE';
+                } else if (blockchainRecord?.transaction_hash) {
+                  effectiveStatus = 'VERIFIED';
+                } else {
+                  effectiveStatus = 'NOT_VERIFIED';
+                }
+
+                const defaultReasons = {
+                  VERIFIED: 'Blockchain audit record exists and the fraud decision matches the recorded blockchain proof.',
+                  NOT_VERIFIED: 'A blockchain record was expected, but no matching blockchain record exists in FraudDecisionLedger.',
+                  INTEGRITY_FAILED: 'A blockchain record exists, but current data does not match the on-chain record (tampering or mismatch detected).',
+                  NOT_APPLICABLE: 'This transaction has not reached the stage where a blockchain audit record should exist.',
+                };
+
+                const defaultTitles = {
+                  VERIFIED: 'Blockchain Audit Record Verified Authentic',
+                  NOT_VERIFIED: 'Blockchain Audit Record Not Found',
+                  INTEGRITY_FAILED: 'Integrity Verification Discrepancy Detected',
+                  NOT_APPLICABLE: 'Blockchain Verification Not Applicable',
+                };
+
+                const explanationText = verificationResult?.reason || defaultReasons[effectiveStatus];
+                const headerTitle = defaultTitles[effectiveStatus];
+
+                return (
+                  <div
+                    className={`p-3 rounded-lg border text-xs flex items-start gap-2.5 ${
+                      effectiveStatus === 'VERIFIED'
+                        ? 'bg-[#133D30]/60 border-[#1F6B52] text-emerald-200'
+                        : effectiveStatus === 'NOT_VERIFIED'
+                        ? 'bg-[#362612]/60 border-[#784F17] text-amber-200'
+                        : effectiveStatus === 'INTEGRITY_FAILED'
+                        ? 'bg-[#33171D]/60 border-[#7A2B37] text-rose-200'
+                        : 'bg-[#163532]/60 border-[#286056] text-[#9BC3AC]'
+                    }`}
+                  >
+                    {effectiveStatus === 'VERIFIED' ? (
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                    ) : effectiveStatus === 'NOT_VERIFIED' ? (
+                      <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                    ) : effectiveStatus === 'INTEGRITY_FAILED' ? (
+                      <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+                    ) : (
+                      <MinusCircle className="w-4 h-4 text-[#9BC3AC] shrink-0 mt-0.5" />
+                    )}
+                    <div className="space-y-0.5">
+                      <p className="font-semibold text-white text-[11px]">
+                        {headerTitle}
+                      </p>
+                      <p className="text-[11px] leading-relaxed text-[#E6F4ED]/90">
+                        {explanationText}
+                      </p>
+                      {verificationResult?.discrepancies && verificationResult.discrepancies.length > 0 && (
+                        <ul className="list-disc list-inside text-[10px] text-rose-300/90 pt-1 space-y-0.5">
+                          {verificationResult.discrepancies.map((d, i) => (
+                            <li key={i}>{d}</li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
           </div>
         )}

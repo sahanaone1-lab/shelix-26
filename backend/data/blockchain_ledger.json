@@ -1,0 +1,813 @@
+[
+  {
+    "index": 0,
+    "timestamp": "2026-01-01T00:00:00Z",
+    "previous_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+    "record": {
+      "transaction_id": "GENESIS-BLOCK-0",
+      "risk_score": 0.0,
+      "risk_category": "SYSTEM",
+      "decision": "GENESIS",
+      "timestamp": "2026-01-01T00:00:00Z",
+      "note": "FraudLens Fraud Decision Integrity Ledger Genesis"
+    },
+    "record_hash": "02b0b22c20bd998de953d1a410933c1436e9dc04fd4587e44772fccad9e6ddee",
+    "nonce": 0,
+    "block_hash": "6ab1a0bb62f376203ef181f39806ed668c34c3cebb71101b391ad3b125ec1e8d"
+  },
+  {
+    "index": 1,
+    "timestamp": "2026-09-07T15:55:39.805652+00:00",
+    "previous_hash": "6ab1a0bb62f376203ef181f39806ed668c34c3cebb71101b391ad3b125ec1e8d",
+    "record": {
+      "transaction_id": "6c8d607f-8d47-45e7-a27b-7148fc6f4504",
+      "risk_score": 0.0,
+      "risk_category": "LOW",
+      "decision": "COMPLETED",
+      "timestamp": "2026-09-07T15:55:39.805652+00:00"
+    },
+    "record_hash": "c5e97b6b6025d98e7089d83f12f1f1fc9b645c32cdfe638e97af8cd7bc05dc95",
+    "nonce": 7,
+    "block_hash": "0000f4046ade03a03cbfa75ca8d4f3c2dbfd34b36252cede3f939d9060bb1dd3"
+  },
+  {
+    "index": 2,
+    "timestamp": "2026-09-07T15:55:39.805652+00:00",
+    "previous_hash": "0000f4046ade03a03cbfa75ca8d4f3c2dbfd34b36252cede3f939d9060bb1dd3",
+    "record": {
+      "transaction_id": "8922f856-6a7d-4714-b4d6-62ed9f0d6b44",
+      "risk_score": 0.0,
+      "risk_category": "LOW",
+      "decision": "COMPLETED",
+      "timestamp": "2026-09-07T15:55:39.805652+00:00"
+    },
+    "record_hash": "9d07853c6114a11e7a200fb7603892d2a936512f17d04323b56509ead9f314fb",
+    "nonce": 81,
+    "block_hash": "008c050d34ced8da692e27c838bb9492c5bf91a1e6cf732b65b936f640051a52"
+  },
+  {
+    "index": 3,
+    "timestamp": "2026-09-07T18:17:13.496736+00:00",
+    "previous_hash": "008c050d34ced8da692e27c838bb9492c5bf91a1e6cf732b65b936f640051a52",
+    "record": {
+      "transaction_id": "b64285e4-f37e-4380-800a-4797c36988e7",
+      "risk_score": 12.0,
+      "risk_category": "LOW",
+      "decision": "COMPLETED",
+      "timestamp": "2026-09-07T18:17:13.496736+00:00"
+    },
+    "record_hash": "8f33e016582d67569a20529da7dbc8d62bda89806bb5fe9e354c72c86a149939",
+    "nonce": 119,
+    "block_hash": "0016d8952a64e9ed1f2d69d6eadf69df3bb0ab478f58edbe837898d428bb7351"
+  },
+  {
+    "index": 4,
+    "timestamp": "2026-09-07T18:17:13.496736+00:00",
+    "previous_hash": "0016d8952a64e9ed1f2d69d6eadf69df3bb0ab478f58edbe837898d428bb7351",
+    "record": {
+      "transaction_id": "2544ba37-c823-432e-ba9b-85da7fa8df30",
+      "risk_score": 8.5,
+      "risk_category": "LOW",
+      "decision": "COMPLETED",
+      "timestamp": "2026-09-07T18:17:13.496736+00:00"
+    },
+    "record_hash": "54f511eb5638e223dc33e22d7d16f0898e6c56f9ecc2f8d3bfb99f23dc0f5861",
+    "nonce": 715,
+    "block_hash": "005e9ecc4f846f060f43c832141e893758a676aa328de5865885b06bacafc351"
+  },
+  {
+    "index": 5,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "005e9ecc4f846f060f43c832141e893758a676aa328de5865885b06bacafc351",
+    "record": {
+      "transaction_id": "cbe1c6ef-d0ad-4e0b-801c-250087416d6b",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "b593b2f542e3d6fbc668548d97897511e824499a41e845cbac000f616756f1ec",
+    "nonce": 161,
+    "block_hash": "000494bb4c5e122fc0fde6d59f4af7aba2f0c89aa224511f944df27cd41ff9d0"
+  },
+  {
+    "index": 6,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "000494bb4c5e122fc0fde6d59f4af7aba2f0c89aa224511f944df27cd41ff9d0",
+    "record": {
+      "transaction_id": "c2cce874-ac74-40b2-ba02-e667e8c17bec",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "893165c07944328f3303f690b3ca787df42d7a5a7dc75dfeff039ab763feaf87",
+    "nonce": 332,
+    "block_hash": "00bd47d3d76cd1b1844526f5e287032d25ef5ac52995ef159e5b0b5192f58333"
+  },
+  {
+    "index": 7,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "00bd47d3d76cd1b1844526f5e287032d25ef5ac52995ef159e5b0b5192f58333",
+    "record": {
+      "transaction_id": "8ba5260e-094c-452c-854c-80ad09dd7bd9",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "8c47c9857159b2b58c04048061ea8e138f4962141433b7c19214b3641e1f3345",
+    "nonce": 91,
+    "block_hash": "0082b6f015b232d09edf3fad4427e178ac7b70775070a48ccf07ab2abab2c5a2"
+  },
+  {
+    "index": 8,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "0082b6f015b232d09edf3fad4427e178ac7b70775070a48ccf07ab2abab2c5a2",
+    "record": {
+      "transaction_id": "1cd41b00-8a73-4a13-93a1-44ba4e8476e3",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "27b60388e4af331ca82b839020dfc188862ec555e54ef0ddd39b2e24c36d31fd",
+    "nonce": 255,
+    "block_hash": "00e934d588b966b2de0ed33d80a36acc64fdba11b6dbe384954f4d6e8c3150f4"
+  },
+  {
+    "index": 9,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "00e934d588b966b2de0ed33d80a36acc64fdba11b6dbe384954f4d6e8c3150f4",
+    "record": {
+      "transaction_id": "23111240-e36b-4e4e-8ecf-9987785f3558",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "0b5dcbd6093fe59678f5110849a25c304ec92908d1cded00599e18538af6082f",
+    "nonce": 253,
+    "block_hash": "0022a84d2cbcd0fe567e1718a8451400a4e7f7ccfaa3c26ad3b2c25f756f7fcb"
+  },
+  {
+    "index": 10,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "0022a84d2cbcd0fe567e1718a8451400a4e7f7ccfaa3c26ad3b2c25f756f7fcb",
+    "record": {
+      "transaction_id": "10b33c99-9177-4320-a771-04cbd98ce49f",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "b42f7bd0684078774fcd5de5e8b8fe59e619cf935ce37841bd8327b1ce2bc3b0",
+    "nonce": 1,
+    "block_hash": "002079d3aaae4b966f650441262c0974061ae038777e5efcf2a0a42a9c0c921a"
+  },
+  {
+    "index": 11,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "002079d3aaae4b966f650441262c0974061ae038777e5efcf2a0a42a9c0c921a",
+    "record": {
+      "transaction_id": "865844ac-ac17-464d-bd93-f53515580d9f",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "b1d755ff7d7f5b41bd59a01d50605a68b6f230449f1b10e78cc9249836073d8b",
+    "nonce": 263,
+    "block_hash": "00a5f84ba08a4b96491bf054a15ee1f08c6470fffbfd1d8e9cd3f09667c8ea35"
+  },
+  {
+    "index": 12,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "00a5f84ba08a4b96491bf054a15ee1f08c6470fffbfd1d8e9cd3f09667c8ea35",
+    "record": {
+      "transaction_id": "1e67e822-1075-4e47-944a-18923a38bcc5",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "41b9f53c11bba9fdcf09b80a75a683dd5b11f79c80b75860939ab4d24e38552b",
+    "nonce": 24,
+    "block_hash": "006a4651da0ae9e48d9dca7ae103f1531c0f8fb70e6f174733c94cd127d2cf2b"
+  },
+  {
+    "index": 13,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "006a4651da0ae9e48d9dca7ae103f1531c0f8fb70e6f174733c94cd127d2cf2b",
+    "record": {
+      "transaction_id": "f2c62bb4-8611-4162-8b5f-002f5ae0fdd7",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "c1d63415a88d58f188b2357c43dab259eb41ecb14c0cc00f77708aa1e19a3bc7",
+    "nonce": 324,
+    "block_hash": "009ec2825bc4334e3d345287cc8941f8e18beffbde500b064c6f3929a4635eb5"
+  },
+  {
+    "index": 14,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "009ec2825bc4334e3d345287cc8941f8e18beffbde500b064c6f3929a4635eb5",
+    "record": {
+      "transaction_id": "8f10f781-f47d-4249-82d8-01004d54c4a1",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "28eca74759496dd06f6fc63b15cb046690113a1a12ecc32ca6556f83245cfca0",
+    "nonce": 102,
+    "block_hash": "00735f56af4fafdff8bd82c43436976c7952b59be8afc8c87a2244a892873b6b"
+  },
+  {
+    "index": 15,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "00735f56af4fafdff8bd82c43436976c7952b59be8afc8c87a2244a892873b6b",
+    "record": {
+      "transaction_id": "c4133d71-f978-4c33-afe9-476b6338e739",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "48f5395e69fdae4a04a908f1dd16d39ecf9a8ac9277c69da3f398f867a0370c3",
+    "nonce": 120,
+    "block_hash": "00b86fc786db03fbc50a7fde00b3e0af80c93cade877594932cb51e1114f90fe"
+  },
+  {
+    "index": 16,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "00b86fc786db03fbc50a7fde00b3e0af80c93cade877594932cb51e1114f90fe",
+    "record": {
+      "transaction_id": "b07100f9-9f86-4fcd-a231-7964cb595c5e",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "d696a2504ba7bf0de1a76fd0d1645aa6b5b8a2b014eab4b8ee9762821ab331f8",
+    "nonce": 235,
+    "block_hash": "0015d06b45340e7762b2733f81b4a454c650e9379cc422be8ee5be022221f8f0"
+  },
+  {
+    "index": 17,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "0015d06b45340e7762b2733f81b4a454c650e9379cc422be8ee5be022221f8f0",
+    "record": {
+      "transaction_id": "ca14798c-4170-43cc-9f7f-8a909fba58ab",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "fa01618e24dbae123a2738e63138c0f197b6d75cff1795ef6e454be8d0846344",
+    "nonce": 190,
+    "block_hash": "0084d0e4da6a0d543e32379512bf96bbeb43e4dd8073e708208d6619fd83c64e"
+  },
+  {
+    "index": 18,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "0084d0e4da6a0d543e32379512bf96bbeb43e4dd8073e708208d6619fd83c64e",
+    "record": {
+      "transaction_id": "f0800a20-425f-41e7-9ab0-4661a930534f",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "f028532d33e7d83e505656bed01f8a136bc879e506d5c6883bc91721d5fd26ef",
+    "nonce": 1246,
+    "block_hash": "000c3e3f22c4d682c712c116a1101f1e5e0474fb1ae17c61bbcc7121978b1bf5"
+  },
+  {
+    "index": 19,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "000c3e3f22c4d682c712c116a1101f1e5e0474fb1ae17c61bbcc7121978b1bf5",
+    "record": {
+      "transaction_id": "ff4aa1fe-5801-4f49-a666-a5d836cdd5b7",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "ffb1d5717af0688e33e5d2b8864e53df07ff2d1667c73707dfce10f761677905",
+    "nonce": 107,
+    "block_hash": "00ab7fbe978dd3277ad6b6c6cc4db5f30964fb66ce9bdef0bf775e1d987a06bc"
+  },
+  {
+    "index": 20,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "00ab7fbe978dd3277ad6b6c6cc4db5f30964fb66ce9bdef0bf775e1d987a06bc",
+    "record": {
+      "transaction_id": "6286ec22-3b22-4dfe-b46f-92e3def0f4ff",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "d4848f86d439d52a4a8e9783c689d6520130c54ca1d6b796cf956ea40ff414f1",
+    "nonce": 167,
+    "block_hash": "00e6cc5e7bf2cf608a9f69124f90c10bc4956a61d142acc062bc6e1f7aa71925"
+  },
+  {
+    "index": 21,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "00e6cc5e7bf2cf608a9f69124f90c10bc4956a61d142acc062bc6e1f7aa71925",
+    "record": {
+      "transaction_id": "6b548eca-e7a5-4a09-b3cd-2c399df0701b",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "d57a61fc9bc2111994509439d656d70d0bbbc0cf26d2855f166f637edd102f6f",
+    "nonce": 289,
+    "block_hash": "00a79f86f148e575b8001d5140287787cf5b909a7f4f154313997c5f07af9d80"
+  },
+  {
+    "index": 22,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "00a79f86f148e575b8001d5140287787cf5b909a7f4f154313997c5f07af9d80",
+    "record": {
+      "transaction_id": "268d90c6-1813-4783-89e7-c643b25a77ff",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "4a79288f395eeb63162dadfaa37d518ea6584957541409b0f9f1c6b4530084f0",
+    "nonce": 61,
+    "block_hash": "005ee5ffa95dcf10a80a42751f5062b6fc96dc17492aa1d81b791e6bec06f67f"
+  },
+  {
+    "index": 23,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "005ee5ffa95dcf10a80a42751f5062b6fc96dc17492aa1d81b791e6bec06f67f",
+    "record": {
+      "transaction_id": "c8abcac2-45fa-4e30-aef9-4cc54d4ff6d3",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "46da7d009d492b358bc21b6f5b1d7959d6c04057b2e5813b39dd402bcebe4421",
+    "nonce": 219,
+    "block_hash": "00c3f714bfc99d52a39d41d44e1ea4459108e64ead5acb56b49dbf22ff4d4ca5"
+  },
+  {
+    "index": 24,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "00c3f714bfc99d52a39d41d44e1ea4459108e64ead5acb56b49dbf22ff4d4ca5",
+    "record": {
+      "transaction_id": "1f28645a-3980-4e1c-b114-cf1f25a4935a",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "b91c627a1f4aca815ed5cca789d4fae580279a3a701ea0cbaf3b02d433a31212",
+    "nonce": 114,
+    "block_hash": "00aa7cec3c39b57a25bfbfa3f0a37da47d50a4162ac0ef369d77300e1b2f2cc4"
+  },
+  {
+    "index": 25,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "00aa7cec3c39b57a25bfbfa3f0a37da47d50a4162ac0ef369d77300e1b2f2cc4",
+    "record": {
+      "transaction_id": "be497bda-1135-498f-bc19-5404a7328a8d",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "bb7a84a3ce6f6ea4360bff925e2d9cc22ed55c8db4e77107e85923ab4c0b1493",
+    "nonce": 87,
+    "block_hash": "003f8e20581ff69b5223d439ef4fac1dce31ca57b2e6a3c5d9b086e865087582"
+  },
+  {
+    "index": 26,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "003f8e20581ff69b5223d439ef4fac1dce31ca57b2e6a3c5d9b086e865087582",
+    "record": {
+      "transaction_id": "5b14cd3f-1081-4800-b8a8-316f4c384f68",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "34abeb1e7dd4de9cba76a3369ecf3fd2b6f859c76631878636525e55aae508c9",
+    "nonce": 370,
+    "block_hash": "002083ce48f61d64e394d7fb4058da485f1c5d73d2f16badd4304cd06fda016a"
+  },
+  {
+    "index": 27,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "002083ce48f61d64e394d7fb4058da485f1c5d73d2f16badd4304cd06fda016a",
+    "record": {
+      "transaction_id": "2c3659e0-65cb-4849-be92-30c35fdab861",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "fd3577ebea9425d23a7a0dd66b3b9928a05629fd35bcfe266e48f9e00ba83342",
+    "nonce": 89,
+    "block_hash": "00910178e98b175f9ba2e18a86647cafaf304356b0d3e3eeafcfb9918a4716c8"
+  },
+  {
+    "index": 28,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "00910178e98b175f9ba2e18a86647cafaf304356b0d3e3eeafcfb9918a4716c8",
+    "record": {
+      "transaction_id": "1bbd7b27-b332-478e-a906-54ee4d628705",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "db61824c6f32d81b8d6a6b075a64dccb20a2566a3d94752cfbd1007acb1572ec",
+    "nonce": 378,
+    "block_hash": "00f9b8f04409eb68a38fb1ef1517927388a5c6793070117dbf7e699ebce61bd2"
+  },
+  {
+    "index": 29,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "00f9b8f04409eb68a38fb1ef1517927388a5c6793070117dbf7e699ebce61bd2",
+    "record": {
+      "transaction_id": "f924f0bd-187f-4a6f-b4de-00ba13f1380b",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "ea65fc584dc25af78a0cbfbb1c1348702874925855e647e636fa929ce895389b",
+    "nonce": 1483,
+    "block_hash": "009174d589ff23650096dbe580e930cc568218a18c76354a471b156b9b4b7459"
+  },
+  {
+    "index": 30,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "009174d589ff23650096dbe580e930cc568218a18c76354a471b156b9b4b7459",
+    "record": {
+      "transaction_id": "40b142a8-1056-48a5-9f69-6512c1713306",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "624a283cfb93b251c16078e945852ff65a0b545b8725a3f0acb670fd1426b75f",
+    "nonce": 354,
+    "block_hash": "00281422e6c5035ae54c7756a72490fc126acdf44d2a213f1c5a463598ea7dfb"
+  },
+  {
+    "index": 31,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "00281422e6c5035ae54c7756a72490fc126acdf44d2a213f1c5a463598ea7dfb",
+    "record": {
+      "transaction_id": "18807476-e7d7-4b50-847c-a36d3a571c4a",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "32b650fc6a66d8125c05bd4d5537603158cdcc177663261d3839d9d7294eb0e5",
+    "nonce": 217,
+    "block_hash": "00f048499d236a5525b15f92ab3aa59211106588a8f18d5bdd6e1eeb7cdff303"
+  },
+  {
+    "index": 32,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "00f048499d236a5525b15f92ab3aa59211106588a8f18d5bdd6e1eeb7cdff303",
+    "record": {
+      "transaction_id": "1fb05fc7-babc-41f2-a25f-956681d5e740",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "e9b166ded851fbdeab2ffd853755a11bfa18e8cbb9a9d53f5aa329365ff4af06",
+    "nonce": 311,
+    "block_hash": "00073986e60f85d563950f221baba03dc15f7e3beec37cc5abd2405582aa9909"
+  },
+  {
+    "index": 33,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "00073986e60f85d563950f221baba03dc15f7e3beec37cc5abd2405582aa9909",
+    "record": {
+      "transaction_id": "9459b045-57b6-4911-91a4-597983483adb",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "cf83fc39ffcf58cf83b883040c2e00308769732f2e3954c152e23cc7c118da02",
+    "nonce": 104,
+    "block_hash": "00c77210b2198496919dcf72f3d96ee6762a3a9a9f3774eba1bfcfd48cd15b30"
+  },
+  {
+    "index": 34,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "00c77210b2198496919dcf72f3d96ee6762a3a9a9f3774eba1bfcfd48cd15b30",
+    "record": {
+      "transaction_id": "13dfb14c-43de-419c-b2df-6837b32a899a",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "7b83a51bed6c2b70317764ca8734c3cbc4213d78a74bdc74a7aa7ffc81817cb3",
+    "nonce": 44,
+    "block_hash": "006df8f201ec3f3b018a6e64a0dd593d4c603231f2fed5a871d4e556c894022e"
+  },
+  {
+    "index": 35,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "006df8f201ec3f3b018a6e64a0dd593d4c603231f2fed5a871d4e556c894022e",
+    "record": {
+      "transaction_id": "90f4f728-6162-4e2d-a2f1-db8909efd93b",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "bd61e1908e1730f425cb97e587f7b55632bd982f0e12111b946dbaf684f275b2",
+    "nonce": 2,
+    "block_hash": "0034800ce307eaa2c77e82846a9249a0b9b4a45de7eaf16d7ecd5f967a44f9bb"
+  },
+  {
+    "index": 36,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "0034800ce307eaa2c77e82846a9249a0b9b4a45de7eaf16d7ecd5f967a44f9bb",
+    "record": {
+      "transaction_id": "b19f8502-0d4b-4a90-ae81-42a3156f1e88",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "7b4d544340e6b89063d7383c902a99384062130d2cb2575fc7e835924439e4b3",
+    "nonce": 488,
+    "block_hash": "0024d6fb989a80f8c119bfd943392df47ff8ae7ff4d6e3e59f65cb589192645a"
+  },
+  {
+    "index": 37,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "0024d6fb989a80f8c119bfd943392df47ff8ae7ff4d6e3e59f65cb589192645a",
+    "record": {
+      "transaction_id": "85a0d4d1-f4ae-4aa0-b658-3b9a4b5b9886",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "f249082ac16581d05423a89c9a0d6b15c276d3bf0a78288e1704240dfa32ce21",
+    "nonce": 118,
+    "block_hash": "005032498d0922a7c546d551adfab3ef617ae258541f756178843c341186a990"
+  },
+  {
+    "index": 38,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "005032498d0922a7c546d551adfab3ef617ae258541f756178843c341186a990",
+    "record": {
+      "transaction_id": "ecc65a06-c046-44c8-9fab-c6cd919191d9",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "c829584d217289dc46bdb620a13075b4bc2876fcb5e36ceb0e66ade57f2b2524",
+    "nonce": 130,
+    "block_hash": "007726cfa311dce39413eea01d3cc8cab2b9ca906e55324859476bbaea380cdf"
+  },
+  {
+    "index": 39,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "007726cfa311dce39413eea01d3cc8cab2b9ca906e55324859476bbaea380cdf",
+    "record": {
+      "transaction_id": "2b5053aa-e8ee-4a6c-8f25-f5be9cc41291",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "0166ffb4d41769ad737a983e148067dfd9ac731de188a50d30045510e1111365",
+    "nonce": 385,
+    "block_hash": "0009dd0b5d79a661109f21727333569cf1a25b9f12a2ff0599438c997f87f8fe"
+  },
+  {
+    "index": 40,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "0009dd0b5d79a661109f21727333569cf1a25b9f12a2ff0599438c997f87f8fe",
+    "record": {
+      "transaction_id": "d357df1b-0ad7-49a5-9203-bd258d68c07f",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "fce0ebb9c6d04c9d91d7c85caedda2a0b7d2c2c4e9b0918fe608b7a59053ff5b",
+    "nonce": 102,
+    "block_hash": "008cf71d04028217cd9b22cad7d5faae0c94dcab96b88dfe5e2fa012510e27cd"
+  },
+  {
+    "index": 41,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "008cf71d04028217cd9b22cad7d5faae0c94dcab96b88dfe5e2fa012510e27cd",
+    "record": {
+      "transaction_id": "f2bc4415-d2cd-4f7f-8e46-ea51e6b37220",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "7af5b512f3bfde41536ff85013e72a68386479ec1448dae401916ed272a39d53",
+    "nonce": 60,
+    "block_hash": "006f4eeec1bd53bf7fac4ce9befc4307a4b793dd4b5806ee6137981f575614a5"
+  },
+  {
+    "index": 42,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "006f4eeec1bd53bf7fac4ce9befc4307a4b793dd4b5806ee6137981f575614a5",
+    "record": {
+      "transaction_id": "b85d713d-3b7a-4008-b00a-a4bd01fe34a1",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "d4855f813f86e60e6e42500ed0c0b63cedfda7b79b327e451bcebf1cfc849c16",
+    "nonce": 302,
+    "block_hash": "00ef27a9c6d41cf699fd30e0f68b9bf5092b21c57787de5646b1a1c3c1a7d334"
+  },
+  {
+    "index": 43,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "00ef27a9c6d41cf699fd30e0f68b9bf5092b21c57787de5646b1a1c3c1a7d334",
+    "record": {
+      "transaction_id": "379916ba-9610-4783-a48d-b2fd83734885",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "0a44e91036dc8accedbcdba4802b58929c61b38c16b3694767d89503a4afaefb",
+    "nonce": 610,
+    "block_hash": "00c0fff88f668d3417fb931ecdb18abfa50c62843f7f9ad18143fa957ee0286d"
+  },
+  {
+    "index": 44,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "00c0fff88f668d3417fb931ecdb18abfa50c62843f7f9ad18143fa957ee0286d",
+    "record": {
+      "transaction_id": "a590f7bd-9c1c-42ce-b55d-02c11b8281eb",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "7eb067e55b5c5ff59a80c971ab0579bbcb0e6e545b9b9b6631de4a4787a8a21e",
+    "nonce": 492,
+    "block_hash": "00584017abf89beeaffec2078813c3543c574269703f98508b7764c23126c1aa"
+  },
+  {
+    "index": 45,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "00584017abf89beeaffec2078813c3543c574269703f98508b7764c23126c1aa",
+    "record": {
+      "transaction_id": "85c57901-bf14-4fbd-94cc-82bbecbd263b",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "3fb491ca8ec18c391b23616f93bc45f4dadbec64fd66af5bda7bc57f9e69f468",
+    "nonce": 93,
+    "block_hash": "0038a420f10f84970edf3d351b1003821ffbdbf67fc126de9f4d1f2e2b8012e9"
+  },
+  {
+    "index": 46,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "0038a420f10f84970edf3d351b1003821ffbdbf67fc126de9f4d1f2e2b8012e9",
+    "record": {
+      "transaction_id": "edf495cd-21f4-4452-8621-5bc2b016f728",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "2beafa6c00acca8895024836d39d0ba8136dea76ac1919d150fe2165b1396cbf",
+    "nonce": 9,
+    "block_hash": "00408266023212da5a8d745b3ce2f278d9d25141aa97b7bae916dd913eb52fc1"
+  },
+  {
+    "index": 47,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "00408266023212da5a8d745b3ce2f278d9d25141aa97b7bae916dd913eb52fc1",
+    "record": {
+      "transaction_id": "50f9fc93-3669-4f28-b437-f17bd6924cdb",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "b57d30fc906d5ab165e265cce342a4e6b6769570c42790acfdf74b04cb91946b",
+    "nonce": 560,
+    "block_hash": "005937eb029f764a4839ff4cf0ec0ff7f060a476e767f723d36d147d25ede542"
+  },
+  {
+    "index": 48,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "005937eb029f764a4839ff4cf0ec0ff7f060a476e767f723d36d147d25ede542",
+    "record": {
+      "transaction_id": "cbe26703-8348-4c4c-bcb0-450318791d8f",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "7d04ef7cbfb6907b79ece1d6c16e01a80e9425eedc5c9e03a919602e4eb03714",
+    "nonce": 418,
+    "block_hash": "006df7a8d6ecabb2f07aaf394bfc009d827c2d7dc6e9fd8c8dcf3de4fb60cf3c"
+  },
+  {
+    "index": 49,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "006df7a8d6ecabb2f07aaf394bfc009d827c2d7dc6e9fd8c8dcf3de4fb60cf3c",
+    "record": {
+      "transaction_id": "78830341-851d-4d22-bb1b-4a6a6ad22c98",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "b9e4b865f01f422eefd00028925bb7f7e3f6df3748b23639428e533442924c34",
+    "nonce": 178,
+    "block_hash": "0047a7de578f08d203bf003a468ede2456f6a4bd710a211669ce40c390a50e51"
+  },
+  {
+    "index": 50,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "0047a7de578f08d203bf003a468ede2456f6a4bd710a211669ce40c390a50e51",
+    "record": {
+      "transaction_id": "4ae1a951-61c8-48ac-9765-f85bd04c365f",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "84e97c3dc3e1c6b17b787a2a37a903d6cb9cfee79705571c4f166fa14567dbca",
+    "nonce": 44,
+    "block_hash": "001cb2334d394ff741754b2c53755587bb2e94e5c6c128a5cbdb8f86a95f66fa"
+  },
+  {
+    "index": 51,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "001cb2334d394ff741754b2c53755587bb2e94e5c6c128a5cbdb8f86a95f66fa",
+    "record": {
+      "transaction_id": "1d402ec5-e3db-4a11-9943-3a60a4355741",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "dbc7eddd5d16917114a76bf31cd6c1237b9ceacd2d86db3dbdcfce28444c229b",
+    "nonce": 348,
+    "block_hash": "00d72a9b4c359e2ad11bfc470af871dd8e5c02938b15189322e393ee8273c010"
+  },
+  {
+    "index": 52,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "00d72a9b4c359e2ad11bfc470af871dd8e5c02938b15189322e393ee8273c010",
+    "record": {
+      "transaction_id": "92dd8646-bc12-4fb9-ae1b-2a9a74577b45",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "6e3f3d1107e227a3298e68190db7fdd43c541474ca5bdf3218af7ea00f28704d",
+    "nonce": 51,
+    "block_hash": "00c58e2cef5d2b9bf06695964bd0f2567b6831a3c102aa8132110495c233ce86"
+  },
+  {
+    "index": 53,
+    "timestamp": "2026-09-07T19:48:30.578246+00:00",
+    "previous_hash": "00c58e2cef5d2b9bf06695964bd0f2567b6831a3c102aa8132110495c233ce86",
+    "record": {
+      "transaction_id": "227a997d-ed9f-4f68-8e0e-2a75d0c44be3",
+      "risk_score": 100.0,
+      "risk_category": "HIGH",
+      "decision": "BLOCKED",
+      "timestamp": "2026-09-07T19:48:30.578246+00:00"
+    },
+    "record_hash": "5b29401cb23cb33e835dc3c3b163be257674ea0ff8bbcc6c3a3a251b549c6775",
+    "nonce": 231,
+    "block_hash": "0055cf4bac51bd762359c82b04b5d317230ab4a0063e4c102cceaf556a8570b7"
+  }
+]

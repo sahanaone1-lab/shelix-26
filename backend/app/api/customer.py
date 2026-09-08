@@ -1,6 +1,11 @@
 from typing import List, Optional, Dict, Any
+import logging
 from fastapi import APIRouter, HTTPException, Query, status
+from pydantic import BaseModel
 from app.core.database import get_supabase
+from app.services.fraud_service import fraud_service
+
+logger = logging.getLogger("fraudlens.api.customer")
 from app.schemas.database import (
     UserResponse,
     AccountResponse,
@@ -104,3 +109,47 @@ async def get_customer_transactions(user_id: Optional[str] = DEFAULT_DEMO_USER_I
         return response.data or []
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database query failed: {str(e)}")
+
+
+class CustomerVerificationRequest(BaseModel):
+    transaction_id: str
+    action: str  # "APPROVE" or "DENY"
+
+
+@router.post("/verify-transaction", response_model=Dict[str, Any])
+async def verify_customer_transaction(payload: CustomerVerificationRequest):
+    """
+    Simulates customer trusted-device verification for a flagged transaction:
+    - APPROVE -> transaction status becomes COMPLETED
+    - DENY    -> transaction status becomes BLOCKED
+    Automatically creates audit proof and anchors the finalized decision on blockchain.
+    """
+    action_clean = payload.action.strip().upper()
+    if action_clean not in {"APPROVE", "DENY"}:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid action '{payload.action}'. Expected 'APPROVE' or 'DENY'."
+        )
+
+    decision = "COMPLETED" if action_clean == "APPROVE" else "BLOCKED"
+
+    try:
+        result = fraud_service.finalize_and_anchor_decision(
+            transaction_id=payload.transaction_id,
+            decision=decision,
+            update_db=True,
+        )
+        return {
+            "success": True,
+            "action": action_clean,
+            "decision": decision,
+            "transaction_id": payload.transaction_id,
+            "status": decision,
+            "blockchain_anchored": result.get("blockchain_anchored", False),
+            "blockchain_record": result.get("blockchain_record"),
+        }
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
+    except Exception as e:
+        logger.error(f"Error during customer transaction verification: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Verification failed: {str(e)}")

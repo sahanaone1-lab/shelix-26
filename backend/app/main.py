@@ -5,6 +5,8 @@ from app.api.health import router as health_router
 from app.api.auth import router as auth_router
 from app.api.customer import router as customer_router
 from app.api.transactions import router as transactions_router
+from app.api.blockchain import router as blockchain_router
+from app.api.mule import router as mule_router
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -28,6 +30,8 @@ app.include_router(health_router, prefix=settings.API_V1_PREFIX)
 app.include_router(auth_router, prefix=settings.API_V1_PREFIX)
 app.include_router(customer_router, prefix=settings.API_V1_PREFIX)
 app.include_router(transactions_router, prefix=settings.API_V1_PREFIX)
+app.include_router(blockchain_router, prefix=settings.API_V1_PREFIX)
+app.include_router(mule_router, prefix=settings.API_V1_PREFIX)
 
 @app.get("/")
 async def root():

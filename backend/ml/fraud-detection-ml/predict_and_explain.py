@@ -1,12 +1,15 @@
 # predict_and_explain.py
 from datetime import datetime
+import pathlib
 import joblib
 import pandas as pd
 
+ml_dir = pathlib.Path(__file__).resolve().parent
+
 # Load assets
-model = joblib.load("fraud_model.pkl")
-explainer = joblib.load("shap_explainer.pkl")
-feature_names = joblib.load("feature_names.pkl")
+model = joblib.load(ml_dir / "fraud_model.pkl")
+explainer = joblib.load(ml_dir / "shap_explainer.pkl")
+feature_names = joblib.load(ml_dir / "feature_names.pkl")
 
 # Human-readable templates for SHAP risk drivers
 REASON_TEMPLATES = {

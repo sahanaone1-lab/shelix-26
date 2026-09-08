@@ -252,6 +252,126 @@ export async function seedTransactions() {
   }
 }
 
+/**
+ * Verify transaction integrity against the blockchain ledger
+ * GET /api/blockchain/verify/{id}
+ */
+export async function verifyBlockchainDecision(transactionId) {
+  try {
+    const response = await requestApi(`/api/blockchain/verify/${transactionId}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error ${response.status}`);
+    }
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message || 'Blockchain verification failed',
+    };
+  }
+}
+
+/**
+ * Fetch recorded blockchain audit metadata for a transaction
+ * GET /api/blockchain/record/{id}
+ */
+export async function getBlockchainRecord(transactionId) {
+  try {
+    const response = await requestApi(`/api/blockchain/record/${transactionId}`);
+    if (!response.ok) {
+      return { success: false, status: response.status };
+    }
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message || 'Failed to fetch blockchain record',
+    };
+  }
+}
+
+/**
+ * Fetch high-level Mule Account Detection KPI summary
+ * GET /api/mule/summary
+ */
+export async function getMuleSummary() {
+  try {
+    const response = await requestApi('/api/mule/summary');
+    if (!response.ok) {
+      throw new Error(`HTTP error ${response.status}`);
+    }
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message || 'Failed to fetch mule summary',
+    };
+  }
+}
+
+/**
+ * Fetch node-link graph topology for Entity Graph Explorer
+ * GET /api/mule/graph?filter={filter}
+ */
+export async function getMuleGraph(filter = 'ALL') {
+  try {
+    const response = await requestApi(`/api/mule/graph?filter=${encodeURIComponent(filter)}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error ${response.status}`);
+    }
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message || 'Failed to fetch mule graph',
+    };
+  }
+}
+
+/**
+ * Fetch list of detected suspected mule accounts
+ * GET /api/mule/accounts
+ */
+export async function getMuleAccounts() {
+  try {
+    const response = await requestApi('/api/mule/accounts');
+    if (!response.ok) {
+      throw new Error(`HTTP error ${response.status}`);
+    }
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message || 'Failed to fetch suspected mule accounts',
+    };
+  }
+}
+
+/**
+ * Fetch detailed entity metadata, connections, and reasons
+ * GET /api/mule/entity/{entityId}
+ */
+export async function getMuleEntityDetails(entityId) {
+  try {
+    const response = await requestApi(`/api/mule/entity/${encodeURIComponent(entityId)}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error ${response.status}`);
+    }
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message || 'Failed to fetch entity details',
+    };
+  }
+}
+
 export default {
   getHealthStatus,
   loginCustomer,
@@ -259,4 +379,11 @@ export default {
   getTransactions,
   getSuspiciousAttempts,
   seedTransactions,
+  verifyBlockchainDecision,
+  getBlockchainRecord,
+  getMuleSummary,
+  getMuleGraph,
+  getMuleAccounts,
+  getMuleEntityDetails,
 };
+

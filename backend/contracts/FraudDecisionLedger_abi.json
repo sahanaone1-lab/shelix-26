@@ -1,0 +1,253 @@
+[
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "transactionHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "transactionId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint16",
+        "name": "riskScore",
+        "type": "uint16"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "riskCategory",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "decision",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "evidenceHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "recordedBy",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "blockNumber",
+        "type": "uint256"
+      }
+    ],
+    "name": "FraudDecisionRecorded",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "_transactionHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "string",
+        "name": "_transactionId",
+        "type": "string"
+      },
+      {
+        "internalType": "uint16",
+        "name": "_riskScore",
+        "type": "uint16"
+      },
+      {
+        "internalType": "string",
+        "name": "_riskCategory",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_decision",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_timestamp",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "_evidenceHash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "recordDecision",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "_transactionHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint16",
+        "name": "_riskScore",
+        "type": "uint16"
+      },
+      {
+        "internalType": "string",
+        "name": "_decision",
+        "type": "string"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "_evidenceHash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "verifyDecision",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "isAnchored",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "isValid",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "isTampered",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "_transactionHash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getDecision",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "transactionHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "string",
+            "name": "transactionId",
+            "type": "string"
+          },
+          {
+            "internalType": "uint16",
+            "name": "riskScore",
+            "type": "uint16"
+          },
+          {
+            "internalType": "string",
+            "name": "riskCategory",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "decision",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "timestamp",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "evidenceHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "recordedBy",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "blockNumber",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct FraudDecisionLedger.FraudDecision",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getTotalDecisions",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

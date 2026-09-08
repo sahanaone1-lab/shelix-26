@@ -8,6 +8,7 @@ from typing import Dict, Any, List, Optional
 import joblib
 import pandas as pd
 from app.core.database import get_supabase
+from app.services.blockchain_service import blockchain_service
 
 logger = logging.getLogger("fraudlens.fraud_service")
 
@@ -138,102 +139,131 @@ class FraudAnalysisService:
         range_min = float(input_dict.get("normal_range_min", 0.0))
         range_max = float(input_dict.get("normal_range_max", 0.0))
 
-        # 5. Build transaction-specific risk drivers (only when supported by actual values / SHAP)
+        # 5. Build transaction-specific risk drivers (mapping model features to human-readable factors)
+        def fmt_shap(val: float) -> str:
+            if abs(val) < 0.005:
+                return "+0.00"
+            return f"{val:+.2f}"
+
         drivers = []
 
         # Driver A: Transaction Amount Anomaly
+        # Features: amount_deviation, transaction_amount
+        shap_dev = shap_by_feature.get("amount_deviation", 0.0)
+        shap_amt = shap_by_feature.get("transaction_amount", 0.0)
+        shap_impact_amt = round(shap_dev + shap_amt, 4) if (shap_dev * shap_amt > 0) else (shap_dev if abs(shap_dev) >= abs(shap_amt) else shap_amt)
+
         has_amount_anomaly = (
             amt_dev > 0.5
             or (range_max > 0 and amt > range_max)
-            or shap_by_feature.get("amount_deviation", 0.0) > 0.03
-            or shap_by_feature.get("transaction_amount", 0.0) > 0.03
+            or shap_impact_amt > 0.05
         )
         if has_amount_anomaly:
-            shap_impact_amt = shap_by_feature.get("amount_deviation", 0.0) or shap_by_feature.get("transaction_amount", 0.0)
             drivers.append({
                 "factor": "amount_deviation",
                 "feature_name": "transaction_amount",
-                "title": "Transaction Amount",
+                "title": "Transaction Amount Anomaly",
                 "current": f"₹{amt:,.2f}",
                 "historical_avg": f"₹{user_avg:,.2f}" if user_avg > 0 else "N/A",
                 "normal_range": f"₹{range_min:,.2f} – ₹{range_max:,.2f}" if (range_min > 0 or range_max > 0) else None,
                 "deviation": f"{amt_dev * 100:+.1f}%" if amt_dev != 0 else "+0.0%",
                 "shap_impact": shap_impact_amt,
-                "shap_display": f"+{shap_impact_amt:.2f}" if shap_impact_amt > 0 else "+0.00",
+                "shap_display": fmt_shap(shap_impact_amt),
                 "reason": f"Transaction amount (₹{amt:,.2f}) is significantly higher than the customer's historical spending pattern (avg ₹{user_avg:,.2f}), deviating by {amt_dev * 100:+.1f}%.",
                 "explanation": "Transaction amount is significantly higher than the customer's historical spending pattern."
             })
 
         # Driver B: Location & Travel Velocity Anomaly
+        # Features: implied_travel_speed_kmh, distance_from_prev_km, is_diff_location
+        shap_speed = shap_by_feature.get("implied_travel_speed_kmh", 0.0)
+        shap_dist = shap_by_feature.get("distance_from_prev_km", 0.0)
+        shap_impact_speed = round(shap_speed + shap_dist, 4) if (shap_speed * shap_dist > 0) else (shap_speed if abs(shap_speed) >= abs(shap_dist) else shap_dist)
+
         has_travel_anomaly = (
             speed > 300.0
             or (dist_km > 200.0 and time_hours < 2.0)
-            or shap_by_feature.get("implied_travel_speed_kmh", 0.0) > 0.03
-            or shap_by_feature.get("distance_from_prev_km", 0.0) > 0.03
+            or shap_impact_speed > 0.05
         )
         if has_travel_anomaly:
-            shap_impact_speed = shap_by_feature.get("implied_travel_speed_kmh", 0.0) or shap_by_feature.get("distance_from_prev_km", 0.0)
             time_display = f"{time_hours:.2f} hours" if time_hours >= 1.0 else f"{time_hours * 60:.0f} mins"
             drivers.append({
                 "factor": "implied_travel_speed_kmh",
                 "feature_name": "implied_travel_speed_kmh",
-                "title": "Location & Travel Velocity",
+                "title": "Impossible Travel Speed",
                 "current_location": loc,
                 "previous_location": prev_loc,
                 "distance": f"{dist_km:,.1f} km",
                 "time_since_previous": time_display,
                 "implied_speed": f"{speed:,.1f} km/h",
                 "shap_impact": shap_impact_speed,
-                "shap_display": f"+{shap_impact_speed:.2f}" if shap_impact_speed > 0 else "+0.00",
+                "shap_display": fmt_shap(shap_impact_speed),
                 "reason": f"Physical travel speed between consecutive locations ({loc} and {prev_loc}) is {speed:,.1f} km/h across {dist_km:,.1f} km in {time_display}, which is physically impossible.",
                 "explanation": f"Implied travel speed of {speed:,.1f} km/h exceeds physical possibility, indicating concurrent card usage or account takeover."
             })
 
         # Driver C: Transaction Velocity Spike
+        # Features: txns_last_10_min, txns_last_1_hour, txns_last_24_hours
+        shap_10m = shap_by_feature.get("txns_last_10_min", 0.0)
+        shap_1h = shap_by_feature.get("txns_last_1_hour", 0.0)
+        shap_24h = shap_by_feature.get("txns_last_24_hours", 0.0)
+        shap_impact_vel = round(shap_10m + shap_1h, 4) if (shap_10m * shap_1h > 0) else (shap_10m if abs(shap_10m) >= abs(shap_1h) else shap_1h)
+
         has_velocity_anomaly = (
             n_10m >= 2
             or n_1h >= 4
             or n_24h >= 10
-            or shap_by_feature.get("txns_last_10_min", 0.0) > 0.03
-            or shap_by_feature.get("txns_last_1_hour", 0.0) > 0.03
+            or shap_impact_vel > 0.05
         )
         if has_velocity_anomaly:
-            shap_impact_vel = (
-                shap_by_feature.get("txns_last_10_min", 0.0)
-                or shap_by_feature.get("txns_last_1_hour", 0.0)
-                or shap_by_feature.get("txns_last_24_hours", 0.0)
-            )
             drivers.append({
                 "factor": "txns_last_10_min",
                 "feature_name": "txns_last_10_min",
-                "title": "Transaction Velocity Spike",
+                "title": "High Transaction Frequency",
                 "txns_last_10_min": n_10m,
                 "txns_last_1_hour": n_1h,
                 "txns_last_24_hours": n_24h,
                 "shap_impact": shap_impact_vel,
-                "shap_display": f"+{shap_impact_vel:.2f}" if shap_impact_vel > 0 else "+0.00",
+                "shap_display": fmt_shap(shap_impact_vel),
                 "reason": f"High-frequency burst: {n_10m} payments attempted in the last 10 minutes ({n_1h} in the last hour, {n_24h} in 24 hours).",
                 "explanation": f"Transaction velocity surge ({n_10m} txns in 10 mins, {n_1h} in 1 hr) indicates rapid automated testing or account draining."
             })
 
         # Driver D: Transaction Execution Timing
+        # Feature: hour_of_day
         shap_hour = shap_by_feature.get("hour_of_day", 0.0)
-        has_time_anomaly = (hour < 6 or hour >= 23 or shap_hour > 0.03)
+        has_time_anomaly = (hour < 6 or hour >= 23 or shap_hour > 0.05)
         if has_time_anomaly:
             drivers.append({
                 "factor": "hour_of_day",
                 "feature_name": "hour_of_day",
-                "title": "Transaction Execution Timing",
+                "title": "Unusual Transaction Time",
                 "current_hour": f"{hour:02d}:00",
                 "baseline_schedule": "Typical daytime activity (07:00 – 23:00)",
                 "shap_impact": shap_hour,
-                "shap_display": f"+{shap_hour:.2f}",
+                "shap_display": fmt_shap(shap_hour),
                 "reason": f"Transaction executed during unusual night hours ({hour:02d}:00), outside the customer's normal operating schedule.",
                 "explanation": f"Transaction occurred outside the customer's normal transaction timing ({hour:02d}:00 night hours)."
             })
 
-        # Sort drivers by SHAP impact descending
-        drivers = sorted(drivers, key=lambda d: d.get("shap_impact", 0.0), reverse=True)
+        # If no anomaly was triggered (normal low-risk transaction)
+        if not drivers:
+            shap_norm_amt = shap_dev if abs(shap_dev) > 0.005 else shap_amt
+            drivers.append({
+                "factor": "amount_deviation",
+                "feature_name": "transaction_amount",
+                "title": "Overall Spending Profile",
+                "current": f"₹{amt:,.2f}",
+                "historical_avg": f"₹{user_avg:,.2f}" if user_avg > 0 else "N/A",
+                "normal_range": f"₹{range_min:,.2f} – ₹{range_max:,.2f}" if (range_min > 0 or range_max > 0) else None,
+                "deviation": f"{amt_dev * 100:+.1f}%" if amt_dev != 0 else "+0.0%",
+                "shap_impact": shap_norm_amt,
+                "shap_display": fmt_shap(shap_norm_amt),
+                "reason": f"Transaction amount (₹{amt:,.2f}) aligns with customer's typical spending baseline.",
+                "explanation": "Transaction behavior is consistent with historical patterns."
+            })
+
+        # Sort drivers by absolute SHAP impact descending so primary drivers lead
+        drivers = sorted(drivers, key=lambda d: abs(d.get("shap_impact", 0.0)), reverse=True)
 
         return {
             "risk_prob": risk_prob,
@@ -471,6 +501,24 @@ class FraudAnalysisService:
             if suspicious_attempts_to_insert:
                 logger.info(f"Inserting {len(suspicious_attempts_to_insert)} suspicious attempts into Supabase...")
                 supabase.table("suspicious_attempts").insert(suspicious_attempts_to_insert).execute()
+
+            # Anchor finalized decisions (COMPLETED / BLOCKED) to FraudDecisionLedger
+            for txn_record, eval_result in zip(created_txns, evaluations_to_insert):
+                status_clean = (txn_record.get("status") or "").upper()
+                if status_clean in ("COMPLETED", "BLOCKED"):
+                    try:
+                        self.finalize_and_anchor_decision(
+                            transaction_id=txn_record["id"],
+                            decision=status_clean,
+                            risk_score=eval_result["risk_score"],
+                            risk_level=eval_result["risk_level"],
+                            evidence_data=eval_result.get("reasons"),
+                            update_db=False,
+                        )
+                    except Exception as b_err:
+                        logger.warning(
+                            f"Blockchain anchoring skipped for sample txn {txn_record.get('id')} (non-blocking): {b_err}"
+                        )
         else:
             logger.info("All 100 sample transactions already exist in Supabase. No new rows inserted.")
 
@@ -531,6 +579,153 @@ class FraudAnalysisService:
         except Exception as e:
             logger.error(f"Error fetching suspicious attempts: {e}", exc_info=True)
             return []
+
+    def finalize_and_anchor_decision(
+        self,
+        transaction_id: str,
+        decision: str,
+        risk_score: Optional[float] = None,
+        risk_level: Optional[str] = None,
+        evidence_data: Optional[Any] = None,
+        update_db: bool = True,
+    ) -> Dict[str, Any]:
+        """
+        Finalizes an existing transaction decision (COMPLETED or BLOCKED) and anchors it
+        to the FraudDecisionLedger smart contract layer.
+
+        Step 1: Create the blockchain audit payload.
+        Step 2: Generate required transaction/evidence hash.
+        Step 3: Send audit record to FraudDecisionLedger.
+        Step 4: Capture blockchain transaction reference / block ID.
+        Step 5: Store blockchain reference and audit metadata in backend store.
+        Step 6: Fail-safe guarantee: blockchain failure does NOT break transaction outcome.
+        - Zero sensitive customer PII on-chain.
+        - Backend logging on successful anchoring.
+        """
+        decision_clean = str(decision).strip().upper()
+        if decision_clean not in {"COMPLETED", "BLOCKED"}:
+            raise ValueError(f"Decision must be 'COMPLETED' or 'BLOCKED'. Received: '{decision}'")
+
+        supabase = get_supabase()
+        db_record = None
+
+        if supabase:
+            try:
+                res = (
+                    supabase.table("transactions")
+                    .select("*")
+                    .eq("id", transaction_id)
+                    .limit(1)
+                    .execute()
+                )
+                if res.data and len(res.data) > 0:
+                    db_record = res.data[0]
+                    if risk_score is None:
+                        risk_score = float(db_record.get("risk_score") or 0.0)
+                    if risk_level is None:
+                        risk_level = str(db_record.get("risk_level") or "LOW")
+                    if evidence_data is None:
+                        evidence_data = db_record.get("reasons")
+
+                    if update_db and db_record.get("status") != decision_clean:
+                        supabase.table("transactions").update({
+                            "status": decision_clean
+                        }).eq("id", transaction_id).execute()
+                        db_record["status"] = decision_clean
+            except Exception as e:
+                logger.warning(f"Database interaction note for transaction {transaction_id}: {e}")
+
+        # Fallback values if not in database
+        final_score = float(risk_score if risk_score is not None else (85.0 if decision_clean == "BLOCKED" else 15.0))
+        final_level = str(risk_level or ("HIGH" if decision_clean == "BLOCKED" else "LOW")).upper()
+
+        # Step 1-5: Anchor to FraudDecisionLedger with fail-safe error handling
+        blockchain_result = None
+        try:
+            blockchain_result = blockchain_service.record_fraud_decision(
+                transaction_id=str(transaction_id),
+                risk_score=final_score,
+                risk_category=final_level,
+                decision=decision_clean,
+                evidence_data=evidence_data,
+            )
+        except Exception as bc_err:
+            # Step 6: Fail-safe guarantee — core transaction flow is never broken
+            logger.warning(
+                f"Blockchain anchoring skipped or failed for Txn {transaction_id} (non-blocking, core flow preserved): {bc_err}"
+            )
+
+        return {
+            "transaction_id": transaction_id,
+            "decision": decision_clean,
+            "risk_score": final_score,
+            "risk_level": final_level,
+            "status": decision_clean,
+            "blockchain_anchored": bool(blockchain_result and blockchain_result.get("anchored")),
+            "blockchain_record": blockchain_result,
+        }
+
+    def enrich_transaction_shap(self, txn: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Ensures transaction reasons contain genuine, non-zero SHAP values derived
+        from the trained model and transaction features.
+        """
+        if not txn:
+            return txn
+
+        reasons = txn.get("reasons")
+        has_zero_shap = bool(reasons) and any(
+            (r.get("shap_impact") == 0.0 and r.get("shap_display") in {"+0.00", "+0.0", "0.00"})
+            for r in reasons
+            if r.get("factor") in {"amount_deviation", "implied_travel_speed_kmh", "txns_last_10_min"}
+        )
+
+        if not has_zero_shap and reasons:
+            return txn
+
+        try:
+            self._ensure_artifacts_loaded()
+            amt = round(float(txn.get("amount") or 0.0), 2)
+            loc = (txn.get("location") or "").strip().lower()
+            csv_path = self.ml_dir / "sample_100_transactions.csv"
+            if csv_path.exists():
+                with open(csv_path, mode="r", encoding="utf-8") as f:
+                    for row in csv.DictReader(f):
+                        r_amt = round(float(row["transaction_amount"]), 2)
+                        r_loc = (row.get("location") or "").strip().lower()
+                        if r_amt == amt and r_loc == loc:
+                            feature_dict = {
+                                "transaction_amount": float(row["transaction_amount"]),
+                                "hour_of_day": int(row["hour_of_day"]),
+                                "user_avg_amount": float(row["user_avg_amount"]),
+                                "amount_deviation": float(row["amount_deviation"]),
+                                "distance_from_prev_km": float(row["distance_from_prev_km"]),
+                                "time_since_prev_hours": float(row["time_since_prev_hours"]),
+                                "implied_travel_speed_kmh": float(row["implied_travel_speed_kmh"]),
+                                "is_diff_location": int(row["is_diff_location"]),
+                                "txns_last_10_min": int(row["txns_last_10_min"]),
+                                "txns_last_1_hour": int(row["txns_last_1_hour"]),
+                                "txns_last_24_hours": int(row["txns_last_24_hours"]),
+                                "location": row.get("location", "Delhi"),
+                                "previous_location": row.get("previous_location", "Delhi"),
+                                "normal_range_min": float(row.get("normal_range_min", 0.0)),
+                                "normal_range_max": float(row.get("normal_range_max", 0.0)),
+                            }
+                            eval_res = self.evaluate_features(feature_dict)
+                            txn["reasons"] = eval_res["reasons"]
+                            try:
+                                supabase = get_supabase()
+                                if supabase and txn.get("id"):
+                                    supabase.table("transactions").update({
+                                        "reasons": eval_res["reasons"]
+                                    }).eq("id", txn["id"]).execute()
+                            except Exception:
+                                pass
+                            return txn
+        except Exception as e:
+            logger.warning(f"Could not enrich transaction SHAP: {e}")
+
+        return txn
 
 
 fraud_service = FraudAnalysisService()
