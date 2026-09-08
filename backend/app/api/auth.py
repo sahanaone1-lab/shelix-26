@@ -7,12 +7,32 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 # In-memory demo credentials for Phase 2 compatibility
 DEMO_CUSTOMERS = [
     {
-        "identifiers": ["customer@bank.com", "cust123", "alex"],
+        "identifiers": ["customer@bank.com", "cust123", "alex", "c101"],
         "password": "password123",
         "user": UserProfile(
             id="a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
             email="customer@bank.com",
             name="Alex Mercer",
+            role="customer"
+        )
+    },
+    {
+        "identifiers": ["sneha@bank.com", "sneha", "c102"],
+        "password": "password123",
+        "user": UserProfile(
+            id="a0eebc99-9c0b-4ef8-bb6d-6bb9bd380c102",
+            email="sneha@bank.com",
+            name="Sneha Sharma",
+            role="customer"
+        )
+    },
+    {
+        "identifiers": ["rajesh@bank.com", "rajesh", "c103"],
+        "password": "password123",
+        "user": UserProfile(
+            id="a0eebc99-9c0b-4ef8-bb6d-6bb9bd380c103",
+            email="rajesh@bank.com",
+            name="Rajesh Patel",
             role="customer"
         )
     }

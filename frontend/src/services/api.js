@@ -372,6 +372,59 @@ export async function getMuleEntityDetails(entityId) {
   }
 }
 
+/**
+ * Fetch Customer Dashboard summary metrics, category expenditure breakdown, and transaction history
+ * GET /api/customer/dashboard-summary?customer_id={customerId}
+ */
+export async function getCustomerDashboardSummary(customerId) {
+  try {
+    const query = customerId ? `?customer_id=${encodeURIComponent(customerId)}` : '';
+    const response = await requestApi(`/api/customer/dashboard-summary${query}`, {
+      method: 'GET',
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error ${response.status}`);
+    }
+    const data = await response.json();
+    return { success: true, data };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message || 'Failed to load customer dashboard summary',
+    };
+  }
+}
+
+/**
+ * Initiate customer demo transfer
+ * POST /api/customer/initiate-transaction
+ */
+export async function initiateCustomerTransaction(payload) {
+  try {
+    const response = await requestApi('/api/customer/initiate-transaction', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      return {
+        success: false,
+        error: data.detail || 'Transaction failed',
+      };
+    }
+    return { success: true, data };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message || 'Failed to initiate customer transaction',
+    };
+  }
+}
+
 export default {
   getHealthStatus,
   loginCustomer,
@@ -385,5 +438,8 @@ export default {
   getMuleGraph,
   getMuleAccounts,
   getMuleEntityDetails,
+  getCustomerDashboardSummary,
+  initiateCustomerTransaction,
 };
+
 
